@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.models.company import Company
+    from app.models.skill import Skill
 
 class Job(Base):
     __tablename__ = "jobs"
@@ -20,3 +21,7 @@ class Job(Base):
     company_id: Mapped[int] = mapped_column(ForeignKey("companies.id"))
 
     company: Mapped["Company"] = relationship(back_populates="jobs")
+
+    skills: Mapped[list["Skill"]] = relationship(
+        secondary="job_skills", back_populates="jobs"
+    )

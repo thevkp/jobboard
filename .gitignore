@@ -30,4 +30,4 @@ htmlcov/
 .ruff_cache/
 
 # markdowns
-markdowns
+.md
