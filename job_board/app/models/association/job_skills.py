@@ -6,3 +6,4 @@ job_skills = Table(
     Base.metadata,
     Column("job_id", Integer, ForeignKey("jobs.id"), primary_key=True),
     Column("skill_id", Integer, ForeignKey("skills.id"), primary_key=True),
+)
