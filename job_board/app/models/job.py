@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from app.models.company import Company
     from app.models.skill import Skill
+    from app.models.application import Application
+    from app.models.user import User
 
 class Job(Base):
     __tablename__ = "jobs"
@@ -24,4 +26,12 @@ class Job(Base):
 
     skills: Mapped[list["Skill"]] = relationship(
         secondary="job_skills", back_populates="jobs"
+    )
+
+    applications: Mapped[list["Application"]] = relationship(
+        back_populates="job"
+    )
+
+    saved_by_users: Mapped[list["User"]] = relationship(
+        secondary="saved_jobs", back_populates="saved_jobs"
     )
