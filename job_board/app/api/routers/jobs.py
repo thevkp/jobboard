@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.schemas.job import JobCreate, JobRead
 from app.api.deps import get_db
 from app.crud import job as job_crud
+from app.models.job import Job
 
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
@@ -23,7 +24,22 @@ def read_job(job_id: int, db: Session = Depends(get_db)):
 
     return db_job
 
-@router.get("/", response_model=list[JobRead])
-def read_all_jobs(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    return job_crud.get_all_jobs(db, skip=skip, limit=limit)
+# @router.get("/", response_model=list[JobRead])
+# def read_all_jobs(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+#     return job_crud.get_all_jobs(db, skip=skip, limit=limit)
 
+@router.get("/", response_model=list[JobRead])
+def get_all_jobs(
+    db: Session = Depends(get_db),
+    skip: int = 0,
+    limit: int = 10,
+    location: str | None = None,
+    min_salary: int | None = None,
+    skill: str | None = None
+) -> list[Job]:
+    return job_crud.get_all_jobs(
+        db, skip=skip, limit=limit, 
+        location=location, 
+        min_salary=min_salary,
+        skill=skill
+        )

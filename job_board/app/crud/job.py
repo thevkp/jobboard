@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session, joinedload, selectinload
 
 from app.models.job import Job
 from app.schemas.job import JobCreate, JobUpdate
+from app.models.skill import Skill
 
 
 def create_job(db: Session, job: JobCreate) -> Job:
@@ -26,15 +27,39 @@ def get_job_by_id(db: Session, job_id: int) -> Job | None:
 
     return db.scalars(stmt).first()
 
-def get_all_jobs(db: Session, skip: int = 0, limit: int = 10) -> list[Job]:
-    stmt = (
-        select(Job)
-        .options(joinedload(Job.company), selectinload(Job.skills))
-        .offset(skip)
-        .limit(limit)
-    )
+# old method
+# def get_all_jobs(db: Session, skip: int = 0, limit: int = 10) -> list[Job]:
+#     stmt = (
+#         select(Job)
+#         .options(joinedload(Job.company), selectinload(Job.skills))
+#         .offset(skip)
+#         .limit(limit)
+#     )
 
-    return list(db.scalars(stmt).all())
+#     return list(db.scalars(stmt).all())
+
+def get_all_jobs(
+    db: Session,
+    skip: int = 0,
+    limit: int = 10,
+    location: str | None = None,
+    min_salary: int | None = None,
+    skill: str | None = None,
+) -> list[Job]:
+    stmt = select(Job).options(joinedload(Job.company), selectinload(Job.skills))
+
+    if location is not None:
+        stmt = stmt.where(Job.location.ilike(f"%{location}%"))
+
+    if min_salary is not None:
+        stmt = stmt.where(Job.max_salary >= min_salary)
+
+    if skill is not None:
+        stmt = stmt.join(Job.skills).where(Skill.name.like(skill))
+
+    stmt = stmt.offset(skip).limit(limit)
+
+    return list(db.scalars(stmt).unique())
 
 def update_job(db: Session, job_id: int, job_update: JobUpdate) -> Job | None:
     db_job = get_job_by_id(db, job_id)
