@@ -9,3 +9,10 @@ class SkillRead(BaseModel):
     
     id: int
     name: str
+
+
+class SkillUpdate(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    name: str
+    

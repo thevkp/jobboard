@@ -22,3 +22,14 @@ class JobRead(BaseModel):
     max_salary: int
     company: CompanyRead
     skills: list[SkillRead] = []
+
+class JobUpdate(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    title: str
+    description: str
+    location: str
+    min_salary: int
+    max_salar: int
+    company: CompanyRead
+    skills: list[SkillRead] = []

@@ -17,3 +17,8 @@ class ApplicationRead(BaseModel):
     applied_at: datetime
     user: UserRead
     job: JobRead
+
+class ApplicationUpdate(BaseModel):
+    status: JobStatus
+    user: UserRead
+    job: JobRead
