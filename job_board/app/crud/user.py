@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from app.models.user import User
-from app.schemas.user import UserCreate, UserUpdate
+from app.schemas.auth import UserCreate
+from app.schemas.user import UserUpdate
 from sqlalchemy import select
 
 
@@ -52,4 +53,3 @@ def delete_user(db: Session, user_id: int) -> bool:
     db.commit()
 
     return True
-

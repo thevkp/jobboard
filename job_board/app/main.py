@@ -7,13 +7,15 @@ from app.api.routers import (
     applications,
     skills,
     saved_jobs,
-    root
+    root,
+    auth
 )
 
 
 app = FastAPI()
 
 app.include_router(root.router)
+app.include_router(auth.router)
 app.include_router(user.router)
 app.include_router(companies.router)
 app.include_router(jobs.router)

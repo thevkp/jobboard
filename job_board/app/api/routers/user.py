@@ -4,15 +4,16 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.crud import user as crud_user
 from app.schemas.user import(
-    UserCreate, UserRead, UserUpdate
+    # UserCreate, 
+    UserRead, UserUpdate
 )
 
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
-@router.post("/", response_model=UserRead)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    return crud_user.create_user(db, user)
+# @router.post("/", response_model=UserRead)
+# def create_user(user: UserCreate, db: Session = Depends(get_db)):
+#     return crud_user.create_user(db, user)
 
 
 @router.get("/{user_id}", response_model=UserRead)
