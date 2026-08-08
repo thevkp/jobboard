@@ -7,13 +7,20 @@ from app.crud import job as job_crud
 from app.models.job import Job
 from app.auth.dependencies import get_current_user
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.models.user import User
+
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
 
 
 @router.post("/", response_model=JobRead)
-def create_job(payload: JobCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return job_crud.create_job(db, payload)
+def create_job(payload: JobCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> Job:
+    if current_user.company_id is None:
+        raise HTTPException(status_code=400, detail="Only users associated with a company can post jobs")
+    return job_crud.create_job(db, payload, company_id=current_user.company_id)
 
 
 @router.get("/{job_id}}", response_model=JobRead)

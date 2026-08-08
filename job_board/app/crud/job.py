@@ -7,8 +7,8 @@ from app.schemas.job import JobCreate, JobUpdate
 from app.models.skill import Skill
 
 
-def create_job(db: Session, job: JobCreate) -> Job:
-    db_job = Job(**job.model_dump())
+def create_job(db: Session, job: JobCreate, company_id: int | None) -> Job:
+    db_job = Job(**job.model_dump(), company_id=company_id)
 
     db.add(db_job)
     db.commit()
