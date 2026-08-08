@@ -7,6 +7,8 @@ from app.schemas.user import(
     # UserCreate, 
     UserRead, UserUpdate
 )
+from app.auth.dependecies import get_current_user
+from app.models.user import User
 
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -20,6 +22,7 @@ router = APIRouter(prefix="/users", tags=["Users"])
 def get_user(
     user_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     user = crud_user.get_user_by_id(db, user_id)
 
@@ -35,6 +38,7 @@ def get_user(
 @router.get("/", response_model=list[UserRead])
 def get_users(
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     return crud_user.get_all_users(db)
 
@@ -44,7 +48,11 @@ def update_user(
     user_id: int,
     user: UserUpdate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
+    if current_user.id != user_id:
+        raise HTTPException(status_code=403, detail="Not authorized to update this user")
+    
     updated = crud_user.update_user(
         db,
         user_id,
@@ -64,7 +72,10 @@ def update_user(
 def delete_user(
     user_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
+    if current_user.id != user_id:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this user")
     success = crud_user.delete_user(db, user_id)
 
     if not success:
