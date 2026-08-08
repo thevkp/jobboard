@@ -31,3 +31,6 @@ htmlcov/
 
 # markdowns
 .md
+
+# test clients
+/job_board_client
