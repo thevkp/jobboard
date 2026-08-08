@@ -8,7 +8,7 @@ from app.schemas.auth import UserCreate, UserLogin, Token
 from app.auth.security import verify_password
 from app.auth.jwt import create_access_token
 from app.core.database import get_db
-from app.auth.dependecies import get_current_user
+from job_board.app.auth.dependencies import get_current_user
 from app.models.user import User
 
 

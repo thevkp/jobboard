@@ -5,13 +5,14 @@ from app.schemas.job import JobCreate, JobRead
 from app.api.deps import get_db
 from app.crud import job as job_crud
 from app.models.job import Job
+from app.auth.dependencies import get_current_user
 
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
 
 
 @router.post("/", response_model=JobRead)
-def create_job(payload: JobCreate, db: Session = Depends(get_db)):
+def create_job(payload: JobCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return job_crud.create_job(db, payload)
 
 

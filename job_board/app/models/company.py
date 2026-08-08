@@ -3,8 +3,10 @@ from sqlalchemy import String
 from app.core.database import Base
 from typing import TYPE_CHECKING
 
+
 if TYPE_CHECKING:
     from app.models.job import Job
+    from app.models.user import User
 
 
 class Company(Base):
@@ -15,5 +17,7 @@ class Company(Base):
     description: Mapped[str | None]
     website: Mapped[str | None]
     location: Mapped[str] = mapped_column(String(70))
+
+    employees: Mapped[list["User"]] = relationship(back_populates="company")
 
     jobs: Mapped[list["Job"]] = relationship(back_populates="company")

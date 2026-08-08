@@ -7,7 +7,7 @@ from app.schemas.user import(
     # UserCreate, 
     UserRead, UserUpdate
 )
-from app.auth.dependecies import get_current_user
+from job_board.app.auth.dependencies import get_current_user
 from app.models.user import User
 
 
