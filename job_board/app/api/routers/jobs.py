@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.schemas.job import JobCreate, JobRead
+from app.schemas.job import JobCreate, JobRead, JobUpdate
 from app.api.deps import get_db
 from app.crud import job as job_crud
 from app.models.job import Job
@@ -51,3 +51,23 @@ def get_all_jobs(
         min_salary=min_salary,
         skill=skill
         )
+
+@router.patch("/{job_id}", response_model=JobRead) # output validated via JobRead
+def update_job(
+    job_id: int, 
+    payload: JobUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> Job:
+    job = job_crud.get_job_by_id(db, job_id)
+
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    if job.company_id != current_user.company_id:
+        raise HTTPException(status_code=403, detail="Not authorized to update this job")
+
+    updated_job = job_crud.update_job(db, job_id, payload)
+    assert updated_job is not None
+    return updated_job 
+
